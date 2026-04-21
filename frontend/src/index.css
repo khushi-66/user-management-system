@@ -1,0 +1,21 @@
+.footer-light {
+  background-color: #e9ecef; /* soft grey */
+  color: #212529;
+  border-top: 1px solid #dee2e6;
+}
+
+.footer-light a {
+  color: #212529;
+}
+footer a {
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+footer a:hover {
+  color: #0d6efd;
+  transform: translateY(-2px);
+}
+.footer-light a:hover {
+  color: #0d6efd;
+}
