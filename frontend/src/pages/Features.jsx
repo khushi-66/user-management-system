@@ -52,7 +52,10 @@ export default function Features() {
 
           {[
             {icon:"bi-shield-lock", title:"JWT Auth"},
-            {icon:"bi-lock", title:"Secure APIs"},
+            {icon:"bi-exclamation-octagon", title:"Secure Error Handling"},
+            {icon:"bi-lock", title:"Authorization"},
+            {icon:"bi-exclamation-circle", title:" Server and Client Side Form Validation"},
+            {icon:"bi-hourglass-split", title:"Rate Limiting"},
             {icon:"bi-person-lock", title:"Role-Based Access"},
             {icon:"bi-shield-check", title:"Protected Routes"},
           ].map((f,i)=>(

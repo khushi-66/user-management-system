@@ -1,8 +1,9 @@
 package com.isrdc.exceptions;
 
-import java.time.LocalDateTime;
 
-import org.springframework.http.HttpStatus;
+import java.util.Map;
+
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -10,13 +11,38 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-	@ExceptionHandler(exception=ContactFormValidationFailedException.class)
-	public ResponseEntity<ExceptionInfo>handleValidation(ContactFormValidationFailedException ex){
-		ExceptionInfo e=new ExceptionInfo();
-		e.setCode("EX-12398");
-		e.setDateTime(LocalDateTime.now());
-		e.setDesc("The Problm was "+ex.getMessage());
+	@ExceptionHandler(ContactFormValidationFailedException.class)
+	public ResponseEntity<?>handleValidation(ContactFormValidationFailedException ex){
 		
-		return  new ResponseEntity<> (e,HttpStatus.INTERNAL_SERVER_ERROR);
+		return ResponseEntity.badRequest().body(
+	            Map.of(
+	                "status", "error",
+	                "message", ex.getMessage()
+	            )
+	        );
+	}
+	
+	
+	
+	@ExceptionHandler(RateLimitException.class)
+	public ResponseEntity<?>handleERateLimit(RateLimitException ex){
+		
+		return ResponseEntity.status(429).body(
+	            Map.of(
+	                "status", "error",
+	                "message", ex.getMessage()
+	            )
+	        );
+	}
+	
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<?> handleGeneric(Exception ex) {
+
+	    return ResponseEntity.status(500).body(
+	        Map.of(
+	            "status", "error",
+	            "message", "Internal Server Error"
+	        )
+	    );
 	}
 }

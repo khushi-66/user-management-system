@@ -12,7 +12,7 @@ public class ContactDto {
     private String email;
     private String message;
      private String subject;
-    private LocalDateTime createAt;
+    private LocalDateTime createAt=LocalDateTime.now();
 
 	public Integer getContactId() {
 		return contactId;

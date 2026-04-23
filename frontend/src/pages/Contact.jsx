@@ -1,17 +1,21 @@
 import { useContext ,useState} from "react";
 import { themeContext } from "../components/ThemeProvider";
 import './contact.css';
+import axios from 'axios';
+import Modal from '../components/Modal';
 export default function Contact(){
-
+     const[showmodal,setShowModal]=useState(false);
+     const[modaldata,setModalData]=useState({
+         type:"success",msg:"",title:""
+     });
     const {darkmode}=useContext(themeContext);
     const[form,setForm]=useState({ name:"",email:"",phone:"",message:"" ,subject:"" });
+    const[loading,setLoading]=useState(false);
     const[errors ,setErrors]=useState({});
-const isFormValid=Object.keys(errors).length===0 && form.name &&
-                    form.email &&
-                    form.phone &&
-                    form.subject &&
-                    form.message;
-     const validate=(data)=>{
+const isFormValid=form.name &&form.email &&form.phone &&
+  form.subject && form.message &&Object.keys(errors).length === 0;
+     
+  const validate=(data)=>{
 const err={};
 
 
@@ -49,14 +53,50 @@ return err;
         setErrors(validate(updated));
     }
 
-    const handleSubmit=()=>{
-        
+    const handleSubmit= async (e)=>{
 
-    }
+      e.preventDefault();
+      setLoading(true)
+      try{
+        const res=  await axios.post("http://localhost:9090/contact",form);
+        setModalData({
+          type:"success", msg:"Thank you for reaching out! We have received your message and will get back to you as soon as possible.",title:"Message Sent Successfully"
+        })
+        setShowModal(true);
+        setForm({ name:"",email:"",phone:"",message:"",subject:"" });
+        setErrors({});
+      }
+      catch(err){
+        setModalData({
+          type:"error", msg:err.response?.data?.message || "Something went wrong",title:"Submission Limit Reached",
+        })
+        setShowModal(true);
+         setErrors({});
+        } finally {
+          setLoading(false);
+        }
+        
+      }
+
+
+    
 
     return(
+
         <div className={`${darkmode?"bg-secondary text-light": "bg-light-subtle"}  rounded-3 border-secondary-subtle border p-4 container mt-4`}>
             <div className="row g-4 h-100 w-100 d-flex">
+
+{/* ############################## Modal Notitfication start ############################## */}
+     <Modal
+     show={showmodal}
+  onClose={()=>setShowModal(false)}
+  title={modaldata.title}
+  message={modaldata.msg}
+  type = {modaldata.type}
+  darkmode={darkmode}
+     />
+{/* ############################## Modal Notitfication end ############################## */}
+
 
 
 {/* ############################### Left side end  ###########################################3 */}
@@ -81,7 +121,7 @@ return err;
 
 <div className="mb-3">
   <label htmlFor="phone" className="form-label">Phone</label>
-  <input  required type="number"
+  <input  required type="text"
   onChange={handleChange}name="phone" value={form.phone} 
   className={`form-control ${errors.phone && "is-invalid"}  ${
   darkmode 
@@ -137,21 +177,26 @@ return err;
   style={{ display: "inline-block" }}
 >
   <button
-    disabled={!isFormValid}
-    type="submit"
-    className={`btn mt-2 btn-lg ${
-      darkmode ? "btn-secondary" : "btn-primary"
-    } ${!isFormValid ? "opacity-50" : ""}`}
-    style={{ pointerEvents: "none" }}  // 🔥 IMPORTANT
-  >
-    Submit
-  </button>
+  disabled={!isFormValid || loading}
+  type="submit"
+  className={`btn mt-2 btn-lg ${
+    darkmode ? "btn-secondary" : "btn-primary"
+  } ${( !isFormValid || loading ) ? "opacity-50" : ""}`}
+>
+  {loading ? (
+    <>
+      <span className="spinner-border spinner-border-sm me-2"></span>
+      Sending...
+    </>
+  ) : (
+    "Submit"
+  )}
+</button>
+
+
 </div>
-    
-
     </form>  
-
-                </div></div>
+      </div></div>
 {/* ############################### Left side end  ###########################################3 */}
  
 
@@ -176,7 +221,7 @@ return err;
     <a href="tel:+919876543210" className={`btn w-100 mt-2 ${
   darkmode ? "btn-outline-success" : "btn-success"
 }`}>
-      Call Now 📞
+      Call Support 📞
     </a>
     <a 
       href="https://mail.google.com/mail/?view=cm&to=sahujii8277@gmail.com"
@@ -195,8 +240,8 @@ return err;
                      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3667.2588621281575!2d79.90484307509733!3d23.19723497905174!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3981b1cd79d0244b%3A0x4297fcccf7310612!2sMadhotal!5e0!3m2!1sen!2sin!4v1776582310701!5m2!1sen!2sin" 
                      
                      style={{ border: 0, width: "100%", height: "100%" }}
-                     allowfullscreen="" loading="lazy" 
-                     referrerpolicy="no-referrer-when-downgrade">
+                     allowFullScreen="" loading="lazy" 
+                     referrerPolicy="no-referrer-when-downgrade">
                         </iframe></div>
                     </div>   
                 </div>

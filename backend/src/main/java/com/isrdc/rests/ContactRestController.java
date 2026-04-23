@@ -1,6 +1,9 @@
 package com.isrdc.rests;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,13 +22,16 @@ public class ContactRestController {
 	private ContactService serv;
 	
 	@PostMapping("/contact")
-	public String saveContact(@Valid @RequestBody  ContactDto dto,BindingResult res) {
+	public ResponseEntity<?> saveContact(@Valid @RequestBody  ContactDto dto,BindingResult res) {
 		
 		if(res.hasErrors()) {
 			throw new ContactFormValidationFailedException("Contact Form Data is not validated");
 		}
 		serv.handleContact(dto);
-		return "Ok";
+		return ResponseEntity.ok(Map.of(
+			    "status", "success",
+			    "message", "Message sent successfully"
+			));
 		
 	}
 	

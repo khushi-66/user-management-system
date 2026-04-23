@@ -1,5 +1,6 @@
 package com.isrdc.utils;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -7,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.isrdc.entities.Contact;
 @Service
 public class EmailSender {
-	
+	@Autowired
 	private JavaMailSender mailsender;
 
 	public void sendEmail(Contact contact) {
