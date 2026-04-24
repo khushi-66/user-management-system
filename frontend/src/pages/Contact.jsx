@@ -1,6 +1,6 @@
 import { useContext ,useState} from "react";
 import { themeContext } from "../components/ThemeProvider";
-import './contact.css';
+
 import axios from 'axios';
 import Modal from '../components/Modal';
 export default function Contact(){

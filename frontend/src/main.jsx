@@ -13,22 +13,32 @@ import About from './pages/About';
 import Features from './pages/Features';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import Terms from './components/Terms';
 const r=createBrowserRouter(createRoutesFromElements(
+     
       <Route path='/' element={<App/>}>
-    <Route path='/contact' element={<Contact/>}/>
-    <Route path='/about' element={<About/>}/>
-    <Route path='/features' element={<Features/>}/>
-    <Route path='/signup' element={<Signup/>}/>
-    <Route path='/login' element={<Login/>}/>
-      </Route>
+       
+    <Route path='contact' element={<Contact/>}/>
+    <Route path='about' element={<About/>}/>
+    <Route path='features' element={<Features/>}/>
+    <Route path='signup' element={<Signup/>}/>
+<Route path='terms' element={<Terms/>}/>
+
+    
+    <Route path='login' element={<Login/>}/>
+    
+    
+  </Route>
+      
 )
      
 )
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById('root'))
+.render(
   <StrictMode>
     <ThemeProvider>
 <RouterProvider router={r}/>
 </ThemeProvider>
 
-  </StrictMode>,
-)
+  </StrictMode>
+);

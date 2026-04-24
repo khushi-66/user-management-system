@@ -1,0 +1,11 @@
+.custom-width {
+  width: 90%;
+  margin: auto; /* center karne ke liye */
+}
+
+/* Desktop (≥992px) */
+@media (min-width: 992px) {
+  .custom-width {
+    width: 38%;
+  }
+}
