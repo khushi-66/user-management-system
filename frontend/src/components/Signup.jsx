@@ -1,29 +1,30 @@
-import { useContext ,useState} from "react";
+import { useContext ,useRef,useState} from "react";
 import { themeContext } from "../components/ThemeProvider";
 import './signup.css';
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import Modal from '../components/Modal';
 export default function Signup(){
-     const[isphoneverified,setIsOtpVerififed]=useState(false);
-     const[isOTPSent,setIsOTPSent]=useState(false);
-
-
-
-     const[showmodal,setShowModal]=useState(false);
-     const[modaldata,setModalData]=useState({
-         type:"success",msg:"",title:""
-     });
-     const [termsError, setTermsError] = useState("");
+    const[canhide,setCanHide]=useState(false);
+    const[isOTPSent,setIsOTPSent]=useState(false);
+    const[isPhoneVerified,setIsPhoneVerified]=useState(false);
+    const[timer,setTimer]=useState(60);
+    const[canResend,setCanReSend]=useState(false);
+    const[showmodal,setShowModal]=useState(false);
+    const[modaldata,setModalData]=useState({
+         type:"success",msg:"",title:"" });
+    const [termsError, setTermsError] = useState("");
     const {darkmode}=useContext(themeContext);
     const[form,setForm]=useState({ name:"",email:"",phone:"",password:"",confirmPsb:""});
     const[loading,setLoading]=useState(false);
     const[errors ,setErrors]=useState({});
-const[accepted,setAccepted]=useState(false);
-const isFormValid=form.name &&form.email &&form.phone &&  form.confirmPsb &&  accepted &&
-  form.password &&Object.keys(errors).length === 0;
-  
-   const navigate=useNavigate()
+    const[accepted,setAccepted]=useState(false);
+    const isFormValid=form.name &&form.email &&form.phone &&  form.confirmPsb &&  accepted &&
+     form.password &&Object.keys(errors).length === 0;
+    const navigate=useNavigate();
+    const[otp,setOTP]=useState(["","","",""]);
+    const otpRef=useRef([]);
+//######################  Form Validation start ######################
   const validate=(data,isaccepted)=>{
 const err={}; 
 if (!data.email) err.email = "Email required";
@@ -42,8 +43,11 @@ if(!isaccepted){
     err.accepted="Please agree to terms and conditions before submitting form";
 
 }
- if (data.phone && !/^[6-9]\d{9}$/.test(data.phone)) {
-   err.phone="Invalid Phone Number...";
+ if (!data.phone) {
+  err.phone = "Phone number required";
+}
+else if (!/^[6-9]\d{9}$/.test(data.phone)) {
+  err.phone = "Invalid Phone Number...";
 }
 
        if(! data.password){
@@ -73,15 +77,16 @@ if(!isaccepted){
 
 return err;
   }
+// ############################## Form Validation End ####################################
 
-    const handleChange=(e)=>{
+// ############################## signup start ####################################
+     const handleChange=(e)=>{
      const{name,value}=e.target;
     const updated=  {...form,[name]:value};
        setForm(updated);
-        setErrors(validate(updated));
+        setErrors(validate(updated,accepted));
+        
           }
-
-    
 
     const handleSubmit= async (e)=>{
       e.preventDefault();
@@ -110,7 +115,130 @@ title:"Action Required"
         }
         
       }
+// ############################## signup end ####################################
+ 
 
+  
+// ############################## OTP Handling start ####################################
+      const startTimer=()=>{
+   
+   
+const interval=setInterval(() => {
+   setTimer((prev)=>{
+
+    if(prev<=1){
+      clearInterval(interval);
+      setCanReSend(true);
+      return 0;
+    }
+    return prev-1;
+   })
+}, 1000);}
+
+const sendOTP=async (e)=>{
+     e.preventDefault();
+     setLoading(true);
+   try{
+    const res=  await axios.get('http://localhost:9090/send-otp',{params:{phone:form.phone}});
+    setIsOTPSent(true);
+    startTimer();
+    setModalData({
+          type:"success",
+          msg:
+"OTP has been sent to your registered Phone Number Please verify your Phone to Create your account",
+title:"Action Required"
+        })
+        setShowModal(true);
+         setErrors({});
+      }catch(err) {
+        setModalData({
+          type:"error", msg:err.response?.data?.message || "Something went wrong",title:" Internal Server Error OTP is Not sent",
+        })
+        setShowModal(true);
+         
+  }finally{
+        setLoading(false);
+  }
+}
+  
+   const verifyOTP= async (e)=>{
+        e.preventDefault();
+        setLoading(true);
+        try{
+        const res=await axios.get('http://localhost:9090/verify-otp',{
+         params:{ phone:form.phone, otp:otp.join("")}
+        });
+        setOTP(["", "", "", ""]);
+        
+        setModalData({
+          type:"success",
+          msg:"OTP Verified Successfully....",
+          title:"OTP Verification Update"
+        });
+
+        setShowModal(true);
+        setIsPhoneVerified(true);
+        setCanHide(true)
+      }catch(err){
+          setModalData({
+          type:"error", msg:err.response?.data?.message || "Something went wrong",title:" Internal Server Error",
+        })
+        setShowModal(true);
+      }finally{
+        setLoading(false);
+      }
+}
+
+const handleOTPChange= (val,index)=>{
+  const updatedOTP=[...otp];
+  updatedOTP[index]=val.slice(-1);
+  setOTP(updatedOTP);
+
+  if(val && index<3){
+   otpRef.current[index+1].focus();
+  }
+
+  const err={};
+  if(!/^\d*$/.test(val)){
+      err.otp="OTP Must be Numbers";
+      setErrors(err);
+  }
+  if(otp.length < 4){
+    err.otp="OTP must be four digits";
+      setErrors(err);
+  }
+}
+
+const handlePaste= (e)=>{
+  e.preventDefault();
+  const pastedData=e.clipboardData.getData("text") .replace(/\D/g, "").slice(0,4);
+ if(!pastedData){
+     return;
+ }
+ const otpArray=pastedData.split("");
+  const updatedOTP = ["", "", "", ""];
+  otpArray.forEach((element,i) => {
+    updatedOTP[i]=element;
+    }
+   
+  );
+  setOTP(updatedOTP);
+  if(otpArray.length-1>0)
+  {
+      otpRef.current[otpArray.length-1].focus();
+  }
+}
+
+const handleKeyDown= (e,index)=>{
+  if(e.key === 'backspace' && !otp[index] && index>0){
+    otpRef.current[index-1].focus();
+
+  }
+}
+   // ############################## OTP Handling End ####################################
+ 
+
+   
 
     
 
@@ -128,11 +256,11 @@ title:"Action Required"
   type = {modaldata.type}
   darkmode={darkmode}
      />
-{/* ############################## Modal Notification end ############################## */}
+{/* ############################## Modal Notification End ############################## */}
 
 
 
-{/* ############################### signup form end  ###########################################3 */}
+{/* ############################### signup form Start  ###########################################3 */}
                <div className="col-12 ">
                 <div className={`card shadow-sm p-3 w-100 h-100 ${darkmode ? "bg-dark text-light" : ""}`}>
                     
@@ -149,10 +277,8 @@ title:"Action Required"
     ? "bg-dark text-light border-secondary placeholder-light" 
     : ""
 }`}id="name" placeholder="Enter Your fullname" required></input>
-{errors.name && <div className="invalid-feedback">{errors.name}</div>}
+{errors.name && <div className={` ${darkmode ?"error-light":"text-danger"} mt-1 small`}>{errors.name}</div>}
 </div>
-
-
 
 <div className="mb-3">
   <label htmlFor="email" className="form-label">Email</label>
@@ -164,7 +290,7 @@ title:"Action Required"
     : ""
 }`}
  id="email" placeholder="Enter your Email"></input>
- {errors.email && <div className="invalid-feedback">{errors.email}</div>}
+ {errors.email && <div className={` ${darkmode ?"error-light":"text-danger"} mt-1 small`}>{errors.email}</div>}
 
 </div>
 
@@ -177,7 +303,7 @@ title:"Action Required"
     : ""
 }`} 
   id="password" placeholder="Enter Strong Password"></input>
-  {errors.password && <div className="invalid-feedback">{errors.password}</div>}
+  {errors.password && <div className={` ${darkmode ?"error-light":"text-danger"} mt-1 small`}>{errors.password}</div>}
 
 </div>
 
@@ -192,48 +318,137 @@ title:"Action Required"
     ? "bg-dark text-light border-secondary placeholder-light" 
     : ""
 }`} id="confirmpsb" ></input>
-{errors.confirmPsb && <div className="invalid-feedback">{errors.confirmPsb}</div>}
+
+{errors.confirmPsb && <div className={` ${darkmode ?"error-light":"text-danger"} mt-1 small`}>{errors.confirmPsb}</div>}
 </div>
 
 {/* #################################### Phone Number start ################################### */}
 <div className="mb-3">
+  
   <label htmlFor="phone" className="form-label">Phone</label>
-  <input  required type="text"
+
+ 
+   
+   <div className="row">
+
+    <div className={`${ form.phone.length === 10 && !isPhoneVerified ?!canResend?"col-5 col-xxl-7": "col-9" :"col-12"}`}>
+<input  required type="text"
   onChange={handleChange}name="phone" value={form.phone} 
   className={`form-control ${errors.phone && "is-invalid"}  ${
   darkmode 
     ? "bg-dark text-light border-secondary placeholder-light" 
     : ""
-}`} id="phone" placeholder="Enter 10 digit phone number"></input>
-{errors.phone && <div className="invalid-feedback">{errors.phone}</div>}
+}`} id="phone" placeholder="Enter 10 digit phone number"
+ readOnly={isPhoneVerified}
+></input>
 
-   <div className="row mt-3 d-flex align-items-center">
+    </div>
 
-       <div className="col-9 ">
-        <p className="d-inline-block me-2">Enter OTP</p>
-        <input type="text" maxLength={1} style={{width:"34px",height:"30px"}} className={` ms-1 form-control d-inline ${darkmode 
-    ? "bg-dark text-light border-secondary placeholder-light" 
-    : ""}`} />
-        <input type="text" style={{width:"34px",height:"30px"}} className="ms-1 form-control d-inline" />
-        <input type="text" style={{width:"34px",height:"30px"}} className="ms-1 form-control d-inline" />
-        <input type="text" style={{width:"34px",height:"30px"}} className=" ms-1 form-control d-inline" />
-     </div>
-     <div className="col-xxl-3 col-5">
-    <button className={`btn btn-md  ${darkmode ? "btn-outline-light":"btn-primary"}`}>Verifiy OTP</button></div>
-     </div>
-
+{ !isPhoneVerified && form.phone.length === 10 && !errors.phone &&(
+      <div className={`${!canResend ? " col-7 col-xxl-5":"col-4"}`}>
      
+  {
+    !isPhoneVerified && form.phone.length === 10 && isOTPSent ?
+    (
+    <button  type="button"
+    disabled={isOTPSent && !canResend}
+    onClick={sendOTP}
+    className={`btn text-white  ${darkmode ? "btn-secondary" :"btn-primary"}`}
+    >
+   {loading ? (
+    <>
+      <span className="spinner-border spinner-border-sm me-2"></span>
+      Resending...
+    </>
+  ) : (
+    "Resend OTP"
+  )}
+    { !canResend && ` in ${timer} S`}
+    </button>)
+    :
+    (
+    <button  onClick={sendOTP} type="button"className={`ms-1 btn  ${darkmode ? "btn-secondary" :"btn-primary"}`}>
+
+      {loading ? (
+    <>
+      <span className="spinner-border spinner-border-sm me-2"></span>
+      Sending...
+    </>
+  ) : (
+    "Send OTP"
+  )}
+     
+    </button>)
+    }
+   </div>  
+      )
+}
+    
+   </div>
+  
+
+
+
+{errors.phone && (
+  <div className={` ${darkmode ?"error-light":"text-danger"} mt-1 small`}>
+    {errors.phone}
+  </div>
+)}
+
+   
+      <div className={`row mt-3 d-flex align-items-center ${canhide && "d-none"} ${!isPhoneVerified && !isOTPSent && "d-none"}`}>
+
+       <div className="col-xxl-9 col-10">
+        <label className="d-inline-block me-2" htmlFor="otp">Enter OTP</label>
+        <div id="otp" className="d-inline">
+          {
+          otp.map((val,index)=>
+          
+         <input key={index} type="text" maxLength={1} style={{width:"34px",height:"33px"}} 
+ value={val} 
+ ref={((el)=>otpRef.current[index]=el)}
+ className={`ms-1  form-control d-inline ${darkmode ?"bg-dark text-light border-secondary placeholder-light" : ""}`} 
+         onChange={(e)=>handleOTPChange(e.target.value,index)}
+         onKeyDown={(e)=>handleKeyDown(e,index)}
+         onPaste={handlePaste}   
+         />
+ 
+          )}
+
+       </div>
+     </div>
+     <div className={`col-xxl-3 col-5 ${!canResend && "mt-4"}`}>
+    <button type="button"  onClick={verifyOTP}
+     className={`btn btn-md  ${darkmode ? "btn-outline-light":"btn-primary"}`}>
+      {loading ? (
+    <>
+      <span className="spinner-border spinner-border-sm me-2"></span>
+      Verifying OTP...
+    </>
+  ) : (
+    "Verify OTP"
+  )}
+      
+      </button></div>
+     </div>
+ {errors.otp && (
+  <div className={` ${darkmode ?"error-light":"text-danger"} mt-1 small`}>
+    {errors.otp}
+  </div>
+)}
+       {isPhoneVerified && (
+    <div className={`${darkmode ?"text-light":"text-success"} mt-2 fw-semibold`}>
+      Phone Verified Successfully ✓
+    </div>
+  )}
 </div>
 {/* #################################### Phone Number end ################################### */}
-
-
-
 
 
 <div className="form-check mb-3">
   <input
   type="checkbox"
-  className={`form-check-input ${errors.accepted && "is-invalid"}`}
+  className={`form-check-input ${errors.accepted && "is-invalid"} ${darkmode ?"bg-dark text-light border-secondary placeholder-light" : ""}`}
   id="terms"
   checked={accepted}
   onChange={(e) => {
@@ -250,7 +465,7 @@ title:"Action Required"
     </button>
   </label>
   {errors.accepted && (
-  <div className="invalid-feedback d-block">
+  <div className={` ${darkmode ?"error-light":"text-danger"} mt-1 small d-block`}>
     {errors.accepted}
   </div>
 )}
@@ -261,8 +476,8 @@ title:"Action Required"
   style={{ display: "inline-block" }}
 >
   <button
-  disabled={!isFormValid || loading}
-  type="submit"
+  disabled={!isFormValid || loading || !isPhoneVerified}
+  type="submit" 
   className={`btn mt-2 btn-lg ${
     darkmode ? "btn-secondary" : "btn-primary"
   } ${( !isFormValid || loading ) ? "opacity-50" : ""}`}

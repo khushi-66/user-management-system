@@ -17,7 +17,7 @@ public class AppSecurity {
 	 
 	@Bean
 	 public SecurityFilterChain configSecurity(HttpSecurity sec) {
-		 sec.authorizeHttpRequests(req->req.requestMatchers("/contact").permitAll().anyRequest().authenticated())
+		 sec.authorizeHttpRequests(req->req.requestMatchers("/contact","/send-otp","/verify-otp").permitAll().anyRequest().authenticated())
 		 .httpBasic(Customizer.withDefaults()).formLogin(Customizer.withDefaults());
 		 return sec.csrf(csrf->csrf.disable()).build();
 	 }

@@ -22,6 +22,17 @@ public class GlobalExceptionHandler {
 	        );
 	}
 	
+	@ExceptionHandler(OTPExpiredException.class)
+	public ResponseEntity<?>handleOTPExpiration(OTPExpiredException ex){
+		return ResponseEntity.badRequest().body(
+				Map.of(
+						"status","error"
+							
+							, "message",ex.getMessage()
+						
+				));
+	}
+	
 	
 	
 	@ExceptionHandler(RateLimitException.class)
