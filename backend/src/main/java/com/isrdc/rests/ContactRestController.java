@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.isrdc.dtos.ContactDto;
-import com.isrdc.exceptions.ContactFormValidationFailedException;
+import com.isrdc.exceptions.FormValidationFailedException;
 import com.isrdc.services.ContactService;
 
 import jakarta.validation.Valid;
@@ -25,7 +25,7 @@ public class ContactRestController {
 	public ResponseEntity<?> saveContact(@Valid @RequestBody  ContactDto dto,BindingResult res) {
 		
 		if(res.hasErrors()) {
-			throw new ContactFormValidationFailedException("Contact Form Data is not validated");
+			throw new FormValidationFailedException("Contact  Details is not valid Please Enter Valid Data ");
 		}
 		serv.handleContact(dto);
 		return ResponseEntity.ok(Map.of(

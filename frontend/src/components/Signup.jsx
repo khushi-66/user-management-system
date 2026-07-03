@@ -83,8 +83,19 @@ return err;
      const handleChange=(e)=>{
      const{name,value}=e.target;
     const updated=  {...form,[name]:value};
+
        setForm(updated);
         setErrors(validate(updated,accepted));
+           if(updated.phone.length === 10){
+ setModalData({
+          type:"success",
+           msg:
+"To complete your signup, you’ll need to verify your phone number using an OTP.",
+title:"📱 Phone Verification Required"
+        })
+        setShowModal(true);
+
+           }
         
           }
 
@@ -93,7 +104,7 @@ return err;
       setLoading(true)
       const{name,email,phone,password}=form;
       try{
-        const res=  await axios.post("http://localhost:9090/contact",form);
+        const res=  await axios.post("http://localhost:9090/signup",form);
         setModalData({
           type:"success",
            msg:
@@ -106,7 +117,7 @@ title:"Action Required"
       }
       catch(err){
         setModalData({
-          type:"error", msg:err.response?.data?.message || "Something went wrong",title:" Internal Server Error",
+          type:"error", msg:err.response?.data?.message || "Something went wrong",title:" Signup Failed",
         })
         setShowModal(true);
          setErrors({});
@@ -169,7 +180,7 @@ title:"Action Required"
          params:{ phone:form.phone, otp:otp.join("")}
         });
         setOTP(["", "", "", ""]);
-        
+        setErrors({});
         setModalData({
           type:"success",
           msg:"OTP Verified Successfully....",
@@ -181,7 +192,7 @@ title:"Action Required"
         setCanHide(true)
       }catch(err){
           setModalData({
-          type:"error", msg:err.response?.data?.message || "Something went wrong",title:" Internal Server Error",
+          type:"error", msg:err.response?.data?.message || "Something went wrong",title:" OTP Verification Failed ",
         })
         setShowModal(true);
       }finally{
@@ -202,11 +213,19 @@ const handleOTPChange= (val,index)=>{
   if(!/^\d*$/.test(val)){
       err.otp="OTP Must be Numbers";
       setErrors(err);
+  }else{
+    setErrors(prev => {
+      const newErrors = { ...prev };
+      delete newErrors.otp;
+      return newErrors;
+    });
   }
   if(otp.length < 4){
     err.otp="OTP must be four digits";
       setErrors(err);
   }
+
+  
 }
 
 const handlePaste= (e)=>{
@@ -230,7 +249,7 @@ const handlePaste= (e)=>{
 }
 
 const handleKeyDown= (e,index)=>{
-  if(e.key === 'backspace' && !otp[index] && index>0){
+  if(e.key === 'Backspace' && !otp[index] && index>0){
     otpRef.current[index-1].focus();
 
   }
@@ -331,7 +350,7 @@ const handleKeyDown= (e,index)=>{
    
    <div className="row">
 
-    <div className={`${ form.phone.length === 10 && !isPhoneVerified ?!canResend?"col-5 col-xxl-7": "col-9" :"col-12"}`}>
+    <div className={`${ form.phone.length === 10 && !isPhoneVerified ?!canResend?"col-4 col-xxl-7": "col-xxl-9 col-6" :"col-12"}`}>
 <input  required type="text"
   onChange={handleChange}name="phone" value={form.phone} 
   className={`form-control ${errors.phone && "is-invalid"}  ${
@@ -345,7 +364,7 @@ const handleKeyDown= (e,index)=>{
     </div>
 
 { !isPhoneVerified && form.phone.length === 10 && !errors.phone &&(
-      <div className={`${!canResend ? " col-7 col-xxl-5":"col-4"}`}>
+      <div className={`${!canResend ? " col-7 col-xxl-5":"col-xxl-3 col-5"}`}>
      
   {
     !isPhoneVerified && form.phone.length === 10 && isOTPSent ?

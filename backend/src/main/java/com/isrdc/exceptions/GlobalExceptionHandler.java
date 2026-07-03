@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-	@ExceptionHandler(ContactFormValidationFailedException.class)
-	public ResponseEntity<?>handleValidation(ContactFormValidationFailedException ex){
+	@ExceptionHandler(FormValidationFailedException.class)
+	public ResponseEntity<?>handleValidation(FormValidationFailedException ex){
 		
 		return ResponseEntity.badRequest().body(
 	            Map.of(
@@ -33,12 +33,43 @@ public class GlobalExceptionHandler {
 				));
 	}
 	
-	
-	
 	@ExceptionHandler(RateLimitException.class)
-	public ResponseEntity<?>handleERateLimit(RateLimitException ex){
+	public ResponseEntity<?>handleOTPMismatch(RateLimitException ex){
 		
 		return ResponseEntity.status(429).body(
+	            Map.of(
+	                "status", "error",
+	                "message", ex.getMessage()
+	            )
+	        );
+	}
+	
+	@ExceptionHandler(InvalidOTPException.class)
+	public ResponseEntity<?>handleERateLimit(InvalidOTPException ex){
+		
+		return ResponseEntity.status(429).body(
+	            Map.of(
+	                "status", "error",
+	                "message", ex.getMessage()
+	            )
+	        );
+	}
+	
+	@ExceptionHandler(SigninFailedException.class)
+	public ResponseEntity<?>handleSignin(SigninFailedException ex){
+		
+		return ResponseEntity.badRequest().body(
+	            Map.of(
+	                "status", "error",
+	                "message", ex.getMessage()
+	            )
+	        );
+	}
+	
+	@ExceptionHandler(SignupFailedException.class)
+	public ResponseEntity<?>handleSignup(SignupFailedException ex){
+		
+		return ResponseEntity.badRequest().body(
 	            Map.of(
 	                "status", "error",
 	                "message", ex.getMessage()
