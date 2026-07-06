@@ -3,7 +3,11 @@ package com.isrdc.entities;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,33 +24,40 @@ public class User {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer userId;
+	@Column(nullable=false)
 	private String name;
+	@Column(unique=true ,nullable=false)
 	private String email;
+	@Column(unique=true ,nullable=false)
 	private String phone;
-	private Integer roleId;
+	@CreationTimestamp
 	private LocalDateTime createdAt;
+	@UpdateTimestamp
 	private LocalDateTime updatedAt;
 	private LocalDateTime lastloginAt;
+	@Column(nullable=false ,length=100)
 	private String password;
-	private String Status;
+	@Column(nullable=false ,columnDefinition="varchar(20) default 'inactive'")
+	private String status;
 	
-	@OneToMany(mappedBy="users",cascade=CascadeType.ALL)
+	@OneToMany(mappedBy="user",cascade=CascadeType.ALL)
 	private List<LoginHistory>loginHistories;
 	
-	@OneToMany(mappedBy="users",cascade=CascadeType.ALL)
+	@OneToMany(mappedBy="user",cascade=CascadeType.ALL)
 	private List<ActivityLog>activityLogs;
 	
-	@OneToMany(mappedBy="users",cascade=CascadeType.ALL)
+	@OneToMany(mappedBy="user",cascade=CascadeType.ALL)
 	private List< Notification>notifications;
 	
-	@OneToMany(mappedBy="users",cascade=CascadeType.ALL)
+	@OneToMany(mappedBy="user",cascade=CascadeType.ALL)
 	private List<PasswordReset>passwordResets;
 	
-	@OneToOne(mappedBy="users",cascade=CascadeType.ALL)
+	@OneToOne(mappedBy="user",cascade=CascadeType.ALL)
 	private UserProfile userProfile;
 	
+	
 	@ManyToOne
-	@JoinColumn(name="role_id")
+	@JoinColumn(name="role_id",nullable=false)
 	private Role role;
 	
 	
@@ -111,12 +122,7 @@ public class User {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	public Integer getRoleId() {
-		return roleId;
-	}
-	public void setRoleId(Integer roleId) {
-		this.roleId = roleId;
-	}
+	
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
@@ -142,10 +148,10 @@ public class User {
 		this.password = password;
 	}
 	public String getStatus() {
-		return Status;
+		return status;
 	}
 	public void setStatus(String status) {
-		Status = status;
+		this.status = status;
 	}
 	
 	

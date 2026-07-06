@@ -1,19 +1,18 @@
 package com.isrdc.dtos;
 
-import java.sql.Time;
-import java.time.LocalTime;
+
+import java.time.LocalDateTime;
 
 import com.isrdc.entities.User;
 
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+
 
 public class PasswordResetDto {
 
 	private Integer resetId;
-	private Integer userId;
+	
 	private String token;
-	private LocalTime expiryTime;
+	private LocalDateTime expiryTime;
 	
 	
 	private User user;
@@ -31,22 +30,17 @@ public class PasswordResetDto {
 	public void setResetId(Integer resetId) {
 		this.resetId = resetId;
 	}
-	public Integer getUserId() {
-		return userId;
-	}
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
+	
 	public String getToken() {
 		return token;
 	}
 	public void setToken(String token) {
 		this.token = token;
 	}
-	public LocalTime getExpiryTime() {
+	public LocalDateTime getExpiryTime() {
 		return expiryTime;
 	}
-	public void setExpiryTime(LocalTime expiryTime) {
+	public void setExpiryTime(LocalDateTime expiryTime) {
 		this.expiryTime = expiryTime;
 	}
 	

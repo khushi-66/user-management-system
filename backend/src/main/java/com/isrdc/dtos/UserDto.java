@@ -10,6 +10,12 @@ import com.isrdc.entities.PasswordReset;
 import com.isrdc.entities.Role;
 import com.isrdc.entities.UserProfile;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+
 
 
 
@@ -18,12 +24,13 @@ public class UserDto {
 	private String name;
 	private String email;
 	private String phone;
-	private Integer roleId;
+	
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 	private LocalDateTime lastloginAt;
 	private String password;
-	private String Status;
+	private String status;
+	
 	
 	
 	private List<LoginHistory>loginHistories;
@@ -40,11 +47,15 @@ public class UserDto {
 	
 	private UserProfile userProfile;
 	
-	
 	private Role role;
 	
 	
-	
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
 	public List<LoginHistory> getLoginHistories() {
 		return loginHistories;
 	}
@@ -105,12 +116,7 @@ public class UserDto {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	public Integer getRoleId() {
-		return roleId;
-	}
-	public void setRoleId(Integer roleId) {
-		this.roleId = roleId;
-	}
+	
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
@@ -135,12 +141,9 @@ public class UserDto {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getStatus() {
-		return Status;
-	}
-	public void setStatus(String status) {
-		Status = status;
-	}
+	
+	
+	
 	
 
 }

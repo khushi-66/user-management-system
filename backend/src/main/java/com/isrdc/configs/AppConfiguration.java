@@ -23,15 +23,13 @@ import com.isrdc.services.UserService;
 @Configuration
 public class AppConfiguration {
 
-    private final ActivityLogRepo activityLogRepo;
+    
 @Autowired
 private UserService serv;
 @Autowired
 private AppFilter filter;
 
-    AppConfiguration(ActivityLogRepo activityLogRepo) {
-        this.activityLogRepo = activityLogRepo;
-    }
+   
 	@Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {

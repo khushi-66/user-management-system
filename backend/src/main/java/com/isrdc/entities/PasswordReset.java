@@ -1,6 +1,7 @@
 package com.isrdc.entities;
 
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import jakarta.persistence.Entity;
@@ -17,9 +18,9 @@ public class PasswordReset {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer resetId;
-	private Integer userId;
+	
 	private String token;
-	private LocalTime expiryTime;
+	private LocalDateTime expiryTime;
 	
 	@ManyToOne
 	@JoinColumn(name="user_id")
@@ -38,22 +39,17 @@ public class PasswordReset {
 	public void setResetId(Integer resetId) {
 		this.resetId = resetId;
 	}
-	public Integer getUserId() {
-		return userId;
-	}
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
+	
 	public String getToken() {
 		return token;
 	}
 	public void setToken(String token) {
 		this.token = token;
 	}
-	public LocalTime getExpiryTime() {
+	public LocalDateTime getExpiryTime() {
 		return expiryTime;
 	}
-	public void setExpiryTime(LocalTime expiryTime) {
+	public void setExpiryTime(LocalDateTime expiryTime) {
 		this.expiryTime = expiryTime;
 	}
 	

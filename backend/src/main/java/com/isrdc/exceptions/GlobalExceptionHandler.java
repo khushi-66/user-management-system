@@ -10,7 +10,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
+	@ExceptionHandler(RoleNotFoundException.class)
+	public ResponseEntity<?>handleRole(RoleNotFoundException ex){
+		
+		return ResponseEntity.badRequest().body(
+	            Map.of(
+	                "status", "error",
+	                "message", ex.getMessage()
+	            )
+	        );
+	}
+	
 	@ExceptionHandler(FormValidationFailedException.class)
 	public ResponseEntity<?>handleValidation(FormValidationFailedException ex){
 		

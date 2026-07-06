@@ -17,7 +17,7 @@ public class ActivityLog {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer logId;
-	private Integer userId;
+	
 	private String action;
 	private LocalDateTime time;
 	private LocalDateTime createdAt;
@@ -39,12 +39,7 @@ public class ActivityLog {
 	public void setLogId(Integer logId) {
 		this.logId = logId;
 	}
-	public Integer getUserId() {
-		return userId;
-	}
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
+	
 	public String getAction() {
 		return action;
 	}

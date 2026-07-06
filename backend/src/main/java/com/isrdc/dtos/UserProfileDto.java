@@ -1,7 +1,8 @@
 package com.isrdc.dtos;
 
 
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
 
 import com.isrdc.entities.User;
 
@@ -10,7 +11,7 @@ import com.isrdc.entities.User;
 public class UserProfileDto {
 
 	 private Integer userId;
-	 private LocalDate dob;
+	 private LocalDateTime dob;
 	 private String address;
 	 private String profileUrl;
 	 private String bio;
@@ -31,10 +32,10 @@ public class UserProfileDto {
 	 public void setUserId(Integer userId) {
 		 this.userId = userId;
 	 }
-	 public LocalDate getDob() {
+	 public LocalDateTime getDob() {
 		 return dob;
 	 }
-	 public void setDob(LocalDate dob) {
+	 public void setDob(LocalDateTime dob) {
 		 this.dob = dob;
 	 }
 	 public String getAddress() {

@@ -14,7 +14,7 @@ public class Notification {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	 private Integer notificationId;
-	 private Integer userId;
+	
 	 private String title;
 	 private String message;
 	 private Boolean isRead;
@@ -34,12 +34,7 @@ public class Notification {
 	 public void setNotificationId(Integer notificationId) {
 		 this.notificationId = notificationId;
 	 }
-	 public Integer getUserId() {
-		 return userId;
-	 }
-	 public void setUserId(Integer userId) {
-		 this.userId = userId;
-	 }
+	 
 	 public String getTitle() {
 		 return title;
 	 }

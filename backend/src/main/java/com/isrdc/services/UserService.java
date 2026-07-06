@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 import com.isrdc.dtos.UserDto;
 import com.isrdc.dtos.UserDto;
 import com.isrdc.entities.LoginHistory;
-
+import com.isrdc.entities.Role;
+import com.isrdc.exceptions.RoleNotFoundException;
 import com.isrdc.repos.ActivityLogRepo;
+import com.isrdc.repos.LoginHistoryRepo;
 import com.isrdc.repos.NotificationRepo;
 import com.isrdc.repos.PasswordResetRepo;
 import com.isrdc.repos.RoleRepo;
@@ -35,7 +37,7 @@ public class UserService implements UserDetailsService {
 	@Autowired
 	private NotificationRepo notificationRepo;
 	@Autowired
-	private LoginHistory loginHistoryRepo;
+	private LoginHistoryRepo loginHistoryRepo;
 	@Autowired
 	private ActivityLogRepo activityRepo;
 	
@@ -53,7 +55,12 @@ public class UserService implements UserDetailsService {
 	
 	public void saveUser(UserDto dto) {
 		com.isrdc.entities.User user=new com.isrdc.entities.User();
+		Role role=roleRepo.findByName("USER");
+		if(role==null) {
+			throw new RoleNotFoundException("Role not found");
+		}
 		BeanUtils.copyProperties(dto, user);
+		user.setRole(role);
 		 userRepo.save(user);
 	}
 	

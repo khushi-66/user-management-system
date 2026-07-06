@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
 public class UserProfile {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	 private Integer userId;
+	 private Integer profileId;
 	 private LocalDate dob;
 	 private String address;
 	 private String profileUrl;
@@ -35,11 +35,12 @@ public class UserProfile {
 	 public void setUser(User user) {
 		 this.user = user;
 	 }
-	 public Integer getUserId() {
-		 return userId;
-	 }
-	 public void setUserId(Integer userId) {
-		 this.userId = userId;
+	 
+	 public Integer getProfileId() {
+		return profileId;
+	}
+	 public void setProfileId(Integer profileId) {
+		 this.profileId = profileId;
 	 }
 	 public LocalDate getDob() {
 		 return dob;
