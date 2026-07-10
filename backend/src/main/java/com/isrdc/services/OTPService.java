@@ -40,11 +40,22 @@ public class OTPService {
 		otpinfo.setExpiryTime(LocalDateTime.now().plusMinutes(5));
 		otpstorage.put(phone, otpinfo);
 		System.out.println(otpinfo);
+		System.out.println(authtoken);
+		System.out.println(twilioPhone);
+		System.out.println(sid);
+		try {
+			
+			Twilio.init( sid,authtoken);
+			String msg="Your OTP for account verification is "+otp+" to Verify Your Phone"+
+					" This code is valid for 5 minutes.\n Please do not share it with anyone.\n\n– Team CodeCrafters";
+			Message.creator(new PhoneNumber("+91"+phone),new PhoneNumber(twilioPhone), msg).create();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
 		
-		Twilio.init( sid,authtoken);
-		String msg="Your OTP for account verification is "+otp+" to Verify Your Phone"+
-				" This code is valid for **5 minutes**.\n Please do not share it with anyone.\n\n– Team CodeCrafters";
-		Message.creator(new PhoneNumber("+91"+phone),new PhoneNumber(twilioPhone), msg).create();
+		
 		System.out.println("otp successfully sent"+otpstorage.get(phone).getOtp());
 	}
 	

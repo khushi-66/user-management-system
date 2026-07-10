@@ -24,6 +24,7 @@ export default function Signup(){
     const navigate=useNavigate();
     const[otp,setOTP]=useState(["","","",""]);
     const otpRef=useRef([]);
+    const[canLogin,setCanLogin]=useState(false);
 //######################  Form Validation start ######################
   const validate=(data,isaccepted)=>{
 const err={}; 
@@ -91,7 +92,7 @@ return err;
           type:"success",
            msg:
 "To complete your signup, you’ll need to verify your phone number using an OTP.",
-title:"📱 Phone Verification Required"
+title:" Phone Verification Required"
         })
         setShowModal(true);
 
@@ -112,8 +113,14 @@ title:"📱 Phone Verification Required"
 title:"Action Required"
         })
         setShowModal(true);
-        setForm({ name:"",email:"",phone:"",password:"" });
+        setForm({ name:"",email:"",phone:"",password:"",confirmPsb:"" });
         setErrors({});
+        setCanLogin(true);
+//         setTimeout(() => {
+//     navigate("/login");
+// }, 3000);
+         
+           
       }
       catch(err){
         setModalData({
@@ -269,7 +276,11 @@ const handleKeyDown= (e,index)=>{
 {/* ############################## Modal Notification start ############################## */}
      <Modal
      show={showmodal}
-  onClose={()=>setShowModal(false)}
+  onClose={()=>{setShowModal(false)
+    if(canLogin === true){
+       navigate("/login");
+    }
+  }}
   title={modaldata.title}
   message={modaldata.msg}
   type = {modaldata.type}

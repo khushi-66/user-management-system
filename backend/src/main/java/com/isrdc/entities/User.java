@@ -37,7 +37,7 @@ public class User {
 	private LocalDateTime lastloginAt;
 	@Column(nullable=false ,length=100)
 	private String password;
-	@Column(nullable=false ,columnDefinition="varchar(20) default 'inactive'")
+	@Column(nullable=false ,columnDefinition="VARCHAR(20) DEFAULT 'INACTIVE'")
 	private String status;
 	
 	@OneToMany(mappedBy="user",cascade=CascadeType.ALL)
@@ -56,12 +56,22 @@ public class User {
 	private UserProfile userProfile;
 	
 	
+	@OneToOne(mappedBy="user",cascade=CascadeType.ALL)
+	private Token token;
+	
+	
 	@ManyToOne
 	@JoinColumn(name="role_id",nullable=false)
 	private Role role;
 	
 	
 	
+	public Token getToken() {
+		return token;
+	}
+	public void setToken(Token token) {
+		this.token = token;
+	}
 	public List<LoginHistory> getLoginHistories() {
 		return loginHistories;
 	}

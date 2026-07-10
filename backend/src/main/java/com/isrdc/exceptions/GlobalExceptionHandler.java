@@ -10,6 +10,28 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+	@ExceptionHandler(TokenExpiredException.class)
+	public ResponseEntity<?>handleTokenExpiration(TokenExpiredException ex){
+		
+		return ResponseEntity.badRequest().body(
+	            Map.of(
+	                "status", "error",
+	                "message", ex.getMessage()
+	            )
+	        );
+	}
+	
+	@ExceptionHandler(InvalidTokenException.class)
+	public ResponseEntity<?>handleInvalidToken(InvalidTokenException ex){
+		
+		return ResponseEntity.badRequest().body(
+	            Map.of(
+	                "status", "error",
+	                "message", ex.getMessage()
+	            )
+	        );
+	}
+	
 	@ExceptionHandler(RoleNotFoundException.class)
 	public ResponseEntity<?>handleRole(RoleNotFoundException ex){
 		
@@ -20,6 +42,19 @@ public class GlobalExceptionHandler {
 	            )
 	        );
 	}
+	
+	
+	@ExceptionHandler(EmailAlreadyVerifiedException.class)
+	public ResponseEntity<?>handleverifiedEmail(EmailAlreadyVerifiedException ex){
+		
+		return ResponseEntity.badRequest().body(
+	            Map.of(
+	                "status", "error",
+	                "message", ex.getMessage()
+	            )
+	        );
+	}
+	
 	
 	@ExceptionHandler(FormValidationFailedException.class)
 	public ResponseEntity<?>handleValidation(FormValidationFailedException ex){
@@ -93,7 +128,7 @@ public class GlobalExceptionHandler {
 	    return ResponseEntity.status(500).body(
 	        Map.of(
 	            "status", "error",
-	            "message", "Internal Server Error"
+	            "message", "Oops! Something went wrong on our end. Please try again later"
 	        )
 	    );
 	}

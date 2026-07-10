@@ -15,6 +15,7 @@ public class DataInititalizer {
 	 CommandLineRunner init(RoleRepo repo) {
     	  
     	  return args->{
+    		  
     		  if(repo.count()==0) {
     			  Role user=new Role();
     			  user.setName("USER");
