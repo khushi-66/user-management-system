@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export function Verified()
 {
      return (
@@ -10,7 +12,7 @@ export function Verified()
         </p>
 
         <p className="text-muted">
-          You can now sign in to your account.
+          You can now login in to your account.
         </p>
 
         <Link to="/login" className="btn btn-success mt-3">
