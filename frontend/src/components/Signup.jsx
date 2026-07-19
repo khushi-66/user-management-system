@@ -25,6 +25,7 @@ export default function Signup(){
     const[otp,setOTP]=useState(["","","",""]);
     const otpRef=useRef([]);
     const[canLogin,setCanLogin]=useState(false);
+    
 //######################  Form Validation start ######################
   const validate=(data,isaccepted)=>{
 const err={}; 

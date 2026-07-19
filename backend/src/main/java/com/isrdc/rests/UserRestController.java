@@ -1,6 +1,7 @@
 package com.isrdc.rests;
 
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +27,10 @@ import com.isrdc.jwts.JwtService;
 import com.isrdc.repos.TokenRepo;
 import com.isrdc.services.UserService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
-@Controller
+@RestController
 public class UserRestController {
 	@Autowired
 	private UserService serv;
@@ -40,6 +42,7 @@ public class UserRestController {
 	private JwtService jwtServ;
 	@Autowired
 	private TokenRepo tokRepo;
+	
   @PostMapping("/signup")
   public ResponseEntity<?> signUp( @Valid @RequestBody UserDto user,BindingResult res) {
 	  if(res.hasErrors()) {
@@ -63,9 +66,9 @@ public class UserRestController {
 	  
 	  return ResponseEntity.ok(Map.of(
 				 "Status","success",
-				 "Message",tok
+				 "Message","login successfull",
+				 "token",tok
 				 ));
-	  
 	  }
 	  
 	  return ResponseEntity.ok(Map.of(
@@ -75,11 +78,23 @@ public class UserRestController {
   }
   
   @GetMapping("/verify-email")
-  public String verifyToken(@RequestParam String token) {
+  public void verifyToken(@RequestParam String token,HttpServletResponse res)throws IOException {
 	String isEmail= serv.verifyEmail(token);
+	String location="http://localhost:5173/"+isEmail;
 	
-	return isEmail;
+	 res.sendRedirect(location);
   }
 	
-
+  @PostMapping("/resend-verificationmail")
+  public ResponseEntity<?> resendVerificationMail(@RequestBody UserDto dto) {
+	String email=dto.getEmail();
+	System.out.println(email);
+	serv.reSendVerificationMail(email);
+	
+	return ResponseEntity.ok(Map.of(
+			 "Status","success",
+			 "Message","Email sent successfully"
+			 ));
+  }
+	
 }

@@ -31,6 +31,8 @@ import com.isrdc.repos.UserRepo;
 import com.isrdc.utils.EmailSender;
 import com.isrdc.utils.TokenGenerator;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @Service
 public class UserService implements UserDetailsService {
 
@@ -54,6 +56,7 @@ public class UserService implements UserDetailsService {
 	private TokenGenerator tokGen;
 	@Autowired
 	private TokenRepo tokRepo;
+	
 	@Override
 	public UserDetails loadUserByUsername(String email)throws UsernameNotFoundException {
 	com.isrdc.entities.User user= userRepo.findByEmail(email);
@@ -74,8 +77,7 @@ public class UserService implements UserDetailsService {
 		if(role==null) {
 			throw new RoleNotFoundException("Role not found");
 		}
-		
-		Token tokenObj=new Token();
+	    Token tokenObj=new Token();
 		tokenObj.setToken(token);
 		
 		tokenObj.setExpiryTime(LocalDateTime.now().plusHours(24));
@@ -89,33 +91,51 @@ public class UserService implements UserDetailsService {
 		  sender.sendVerificationMail(dto.getEmail(), dto.getName(), token);
 	}
 	
+	public void reSendVerificationMail(String email) {
+		com.isrdc.entities.User user=userRepo.findByEmail(email);
+		System.out.println(user);
+		if(user==null){
+		    throw new UsernameNotFoundException("User not found");
+		}
+		
+		String token=tokGen.generateToken();
+		System.out.println("Token = "+token);
+		 Token tokenObj=tokRepo.findByUser(user);
+			tokenObj.setToken(token);
+			tokenObj.setExpiryTime(LocalDateTime.now().plusHours(24));
+			user.setStatus("InActive");
+			tokenObj.setUser(user);
+			user.setToken(tokenObj);
+			 userRepo.save(user);
+			 sender.sendVerificationMail(user.getEmail(), user.getName(), token);
+	}
+	
 	
 	
 public String verifyEmail(String token) {
 	Token tokObj=tokRepo.findByToken(token);
 	String emailToken;
-	com.isrdc.entities.User user=tokObj.getUser();	
+	com.isrdc.entities.User user=tokObj.getUser();
 	if(tokObj == null) {
 		emailToken="invalid";
-		throw new InvalidTokenException("Invalid verification link. Please check the link or request a new verification email.");
-	    
+		
 	}
-	
+		
 	 else if(LocalDateTime.now().isAfter(tokObj.getExpiryTime())) {
 		 emailToken="expired";
-		tokRepo.delete(tokObj);
-		throw new TokenExpiredException("Your verification link has expired. Please request a new verification email.");
-	}
-	 else if(tokObj.getUser().getStatus()== "Active") {
-		 emailToken="alreadyVerified";
-		throw new EmailAlreadyVerifiedException("Your email address has already been verified. You can log in to your account.");
+		
+	 }
+	 else if("Active".equals(tokObj.getUser().getStatus())) {
+		 emailToken="alreadyverified";
 		
 	}else {
 		emailToken="verified";
 		user.setStatus("Active");
-		userRepo.save(user);
-		tokRepo.delete(tokObj);
-	}
+		}
+	user.setToken(null);
+	tokObj.setUser(null);
+	userRepo.save(user);
+	tokRepo.delete(tokObj);
 	 return emailToken;
 	 
 }

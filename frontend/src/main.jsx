@@ -14,8 +14,13 @@ import Features from './pages/Features';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import Terms from './components/Terms';
+import { Invalid } from './pages/Invalid';
+import { Expired } from './pages/Expired';
+import { AlreadyVerified } from './pages/AlreadyVerified';
+import { Verified } from './pages/verified';
+import ResendVerificationEmail from './pages/ResendVerificationEmail';
 const r=createBrowserRouter(createRoutesFromElements(
-     
+     <>
       <Route path='/' element={<App/>}>
        
     <Route path='contact' element={<Contact/>}/>
@@ -23,13 +28,15 @@ const r=createBrowserRouter(createRoutesFromElements(
     <Route path='features' element={<Features/>}/>
     <Route path='signup' element={<Signup/>}/>
 <Route path='terms' element={<Terms/>}/>
-
-    
-    <Route path='login' element={<Login/>}/>
-    
-    
-  </Route>
-      
+<Route path='login' element={<Login/>}/>
+</Route>
+  <Route path='invalid' element={<Invalid/>}/>
+  <Route path='verified' element={<Verified/>}/>
+  <Route path='alreadyverified' element={<AlreadyVerified/>}/>
+  <Route path='expired' element={<Expired/>}/>
+  <Route path='resend-verification' element={<ResendVerificationEmail/>}/>
+  
+  </>
 )
      
 )

@@ -56,7 +56,7 @@ public class User {
 	private UserProfile userProfile;
 	
 	
-	@OneToOne(mappedBy="user",cascade=CascadeType.ALL)
+	@OneToOne(mappedBy="user",cascade=CascadeType.ALL, orphanRemoval = true)
 	private Token token;
 	
 	

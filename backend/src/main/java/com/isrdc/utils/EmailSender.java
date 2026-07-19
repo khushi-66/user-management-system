@@ -33,10 +33,6 @@ public class EmailSender {
 	
 	public void sendVerificationMail(String to,String username,String token) {
 		String link="http://localhost:9090/verify-email?token="+token; 
-		
-	    
-		
-		
 		String subject="Verify your Email address";
 		try {
 			MimeMessage mimemsg=mailsender.createMimeMessage();
