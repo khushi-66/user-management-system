@@ -14,11 +14,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.isrdc.dtos.PasswordResetDto;
+import com.isrdc.dtos.ResetPasswordDto;
+import com.isrdc.dtos.RoleDto;
 import com.isrdc.dtos.UserDto;
 import com.isrdc.entities.Token;
 import com.isrdc.entities.User;
@@ -62,12 +65,19 @@ public class UserRestController {
 	 UsernamePasswordAuthenticationToken token=new UsernamePasswordAuthenticationToken(dto.getEmail(),dto.getPassword());
 	  Authentication auth=authmanager.authenticate(token);
 	  if(auth.isAuthenticated()) {
-		 String tok= jwtServ.generateToken(dto.getEmail());
-	  
+		 String jwtToken= jwtServ.generateToken(dto.getEmail());
+	  UserDto userdto=serv.findUser(dto.getEmail());
+	 
+	   String roleName=userdto.getRole().getName();
 	  return ResponseEntity.ok(Map.of(
 				 "Status","success",
 				 "Message","login successfull",
-				 "token",tok
+				 "token",jwtToken,
+				 "userid",userdto.getUserId(),
+				 "role",roleName,
+				 "email",userdto.getEmail(),
+				 "phone",userdto.getPhone(),
+				 "username",userdto.getName()
 				 ));
 	  }
 	  
@@ -81,8 +91,20 @@ public class UserRestController {
   public void verifyToken(@RequestParam String token,HttpServletResponse res)throws IOException {
 	String isEmail= serv.verifyEmail(token);
 	String location="http://localhost:5173/"+isEmail;
-	
-	 res.sendRedirect(location);
+	res.sendRedirect(location);
+  }
+  
+  @GetMapping("/verify-passwordtoken")
+  public void verifyPasswordToken(@RequestParam String token,HttpServletResponse res)throws IOException {
+	  String status = serv.verifyToken(token);
+System.out.println(status);
+	    if ("verified-token".equals(status)) {
+	        res.sendRedirect("http://localhost:5173/change-password?token=" + token);
+	    } else if ("expired-token".equals(status)) {
+	        res.sendRedirect("http://localhost:5173/expired-token");
+	    } else {
+	        res.sendRedirect("http://localhost:5173/invalid-token");
+	    }
   }
 	
   @PostMapping("/resend-verificationmail")
@@ -96,5 +118,51 @@ public class UserRestController {
 			 "Message","Email sent successfully"
 			 ));
   }
+  
+  @PostMapping("/reset-password")
+  public ResponseEntity<?> resetPassword(@RequestBody UserDto dto) {
+	String email=dto.getEmail();
+	System.out.println(email);
+	serv.SendPasswordResetMail(email);
 	
-}
+	return ResponseEntity.ok(Map.of(
+			 "Status","success",
+			 "Message","password resetmail sent successfully"
+			 ));
+  }
+  
+  
+  @PostMapping("/update-password")
+  public ResponseEntity<?> UpdatePassword(@RequestBody ResetPasswordDto dto,HttpServletResponse res) throws IOException {
+	String token=dto.getToken();
+	String querypassword= dto.getPassword();
+	System.out.println(querypassword);
+	System.out.println(token);
+	String status=serv.verifyToken(token);
+	if ("verified-token".equals(status)) {
+		UserDto userdto=serv.findUserByToken(token);
+		System.out.println(userdto);
+		 serv.updateUser(passenc.encode(querypassword),userdto.getUserId());
+	
+		return ResponseEntity.ok(Map.of(
+				 "Status","success",
+				 "Message","password updated successfully"
+				 ));
+		
+	}
+    else if ("expired-token".equals(status)) {
+    	return ResponseEntity.ok(Map.of(
+   			 "Status","expired",
+   			 "Message","password expired "
+   			 ));
+    } else {
+    	return ResponseEntity.ok(Map.of(
+   			 "Status","invalid",
+   			 "Message","password is invalid"
+   			 ));
+    }
+	
+  }
+  }
+	
+  

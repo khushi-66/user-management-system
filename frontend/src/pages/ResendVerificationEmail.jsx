@@ -13,6 +13,26 @@ const[loading,setLoading]=useState(false);
     const [email, setEmail] = useState("");
 const[canLogin,setCanLogin]=useState(false);
 const navigate=useNavigate();
+
+const validateEmail=async(e)=>{
+        if(!e.trim()  ){
+                    setModalData({
+                        type:"error",msg:"Email cannot be empty please enter your correct email address to resend verification mail ",title:"validation error"
+                    });
+                    setShowModal(true);
+                    return false;
+                  }
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                  if(!emailRegex.test(e)){
+                      setModalData({
+                        type:"error",msg:"Email you entered is invalid",title:"Validation erorr"
+                    });
+                    setShowModal(true);
+                  };
+            
+                }
+// ######################################## field validation ########################
+    
     const handleSubmit = async(e) => {
         e.preventDefault();
         setLoading(true);
@@ -89,7 +109,8 @@ title:"Action Required"
                                         className="form-control"
                                         placeholder="Enter Email"
                                         value={email}
-                                        onChange={(e)=>setEmail(e.target.value)}
+                                        onChange={(e)=>{setEmail(e.target.value)}}
+                                        onBlur={(e)=>{validateEmail(e.target.value)}}
                                         required
                                     />
 

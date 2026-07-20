@@ -35,13 +35,13 @@ export default function Login(){
                     setShowModal(true);
                   }
                 }
-                  if(field === 'password')
+                  if(field === 'password'){
                   if(!e){
                     setModalData({
                         type:"error",msg:"password cannot be empty please enter your correct password",title:"validation erorr"
                     });
                     setShowModal(true);
-                }
+                }}
                   }
 // ######################################## field validation ########################
     
@@ -148,7 +148,7 @@ return(
             </label>
           <div className="col-sm-8">
               <input id="email" name="email"
-                type="email"  value={email} onChange={
+                type="email"  required value={email} onChange={
                     (e)=>setEmail(e.target.value)}
                      onBlur={ ()=>{  handlevalidate("email",email)}}
                 className="form-control"
@@ -157,7 +157,7 @@ return(
             </div>
           </div>
           <div className="mb-3 row align-items-center">
-            <label  htmlFor="password" className="col-sm-4 col-form-label">
+            <label required htmlFor="password" className="col-sm-4 col-form-label">
              Password
             </label>
           <div className="col-sm-8 ">

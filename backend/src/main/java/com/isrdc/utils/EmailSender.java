@@ -45,6 +45,24 @@ public class EmailSender {
 			e.printStackTrace();
 			
 		}
+	}
+	
+		public void sendPasswordResetMail(String to,String username,String token) {
+			String link="http://localhost:9090/verify-passwordtoken?token="+token;
+			String subject="Reset your password";
+			
+			try {
+				MimeMessage mimemsg=mailsender.createMimeMessage();
+			MimeMessageHelper helper=new MimeMessageHelper(mimemsg,true);
+			helper.setTo(to);
+			helper.setSubject(subject);
+			helper.setText(ePage.passwordResetPage(username,link),true);
+			mailsender.send(mimemsg);
+			}catch(Exception e){
+				e.printStackTrace();
+				
+			}
+		
 		
 		
 		

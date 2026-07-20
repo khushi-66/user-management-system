@@ -20,8 +20,11 @@ import { AlreadyVerified } from './pages/AlreadyVerified';
 import { Verified } from './pages/Verified';
 import ResendVerificationEmail from './pages/ResendVerificationEmail';
 import ForgotPassword from './pages/ForgotPassword';
+import ChangePassword from './pages/ChangePassword';
 import Userdashboard from './components/Userdashboard';
 import Admindashboard from './components/Admindashboard';
+import ExpiredToken from './pages/ExpiredToken';
+import InvalidToken from './pages/InvalidToken';
 const r=createBrowserRouter(createRoutesFromElements(
      <>
       <Route path='/' element={<App/>}>
@@ -34,14 +37,18 @@ const r=createBrowserRouter(createRoutesFromElements(
 
 </Route>
 <Route path='login' element={<Login/>}/>
-  <Route path='invalid' element={<Invalid/>}/>
-  <Route path='verified' element={<Verified/>}/>
-  <Route path='alreadyverified' element={<AlreadyVerified/>}/>
-  <Route path='expired' element={<Expired/>}/>
+  <Route path='invalid-email' element={<Invalid/>}/>
+  <Route path='verified-email' element={<Verified/>}/>
+  <Route path='alreadyverified-email' element={<AlreadyVerified/>}/>
+  <Route path='expired-email' element={<Expired/>}/>
   <Route path='resend-verification' element={<ResendVerificationEmail/>}/>
   <Route path='forgot-password' element={<ForgotPassword/>} />
   <Route path='user' element={<Userdashboard/>}/>
+  <Route path='change-password' element={<ChangePassword/>}/>
   <Route path='admin' element={<Admindashboard/>} />
+  <Route path='expired-token' element={<ExpiredToken/>}/>
+  <Route path='invalid-token' element={<InvalidToken/>}/>
+  
   </>
 )
      

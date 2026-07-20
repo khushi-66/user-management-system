@@ -6,4 +6,5 @@ import com.isrdc.entities.Role;
 
 public interface RoleRepo extends JpaRepository<Role, Integer> {
  public Role findByName(String name);
+
 }

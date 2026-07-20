@@ -64,7 +64,7 @@ private AppFilter filter;
 	@Bean
 	public SecurityFilterChain appSecurity(HttpSecurity sec) throws Exception {
 		return sec.csrf(csrf->csrf.disable()).authorizeHttpRequests(
-				req->req.requestMatchers("/contact","/resend-verificationmail","/send-otp","/verify-otp","/signup","/verify-email","/signin")
+				req->req.requestMatchers("/contact","/resend-verificationmail", "/verify-passwordtoken","/update-password","/reset-password","/send-otp","/verify-otp","/signup","/verify-email","/signin")
 				.permitAll()
 				.anyRequest()
 				.authenticated()
