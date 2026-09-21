@@ -20,7 +20,7 @@ public class ActivityLog {
 	
 	private String action;
 	private LocalDateTime time;
-	private LocalDateTime createdAt;
+	
 	private String description;
 	@ManyToOne
 	@JoinColumn(name="user_id")
@@ -52,12 +52,7 @@ public class ActivityLog {
 	public void setTime(LocalDateTime time) {
 		this.time = time;
 	}
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
+	
 	public String getDescription() {
 		return description;
 	}

@@ -1,5 +1,7 @@
 package com.isrdc.entities;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,10 +16,10 @@ public class Notification {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	 private Integer notificationId;
-	
+	private LocalDateTime time;
 	 private String title;
 	 private String message;
-	 private Boolean isRead;
+	 private String isRead;
 	 @ManyToOne
 		@JoinColumn(name="user_id")
 		private User user;
@@ -47,11 +49,17 @@ public class Notification {
 	 public void setMessage(String message) {
 		 this.message = message;
 	 }
-	 public Boolean getIsRead() {
+	 public String getIsRead() {
 		 return isRead;
 	 }
-	 public void setIsRead(Boolean isRead) {
+	 public void setIsRead(String isRead) {
 		 this.isRead = isRead;
+	 }
+	 public LocalDateTime getTime() {
+		 return time;
+	 }
+	 public void setTime(LocalDateTime time) {
+		 this.time = time;
 	 }
 	 
 	 

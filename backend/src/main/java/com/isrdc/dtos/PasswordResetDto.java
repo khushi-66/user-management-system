@@ -15,16 +15,7 @@ public class PasswordResetDto {
 	private LocalDateTime expiryTime;
 	
 	
-	private User user;
-	
-	
-	public User getUser() {
-		return user;
-	}
-	public void setUser(User user) {
-		this.user = user;
-	}
-	public Integer getResetId() {
+		public Integer getResetId() {
 		return resetId;
 	}
 	public void setResetId(Integer resetId) {

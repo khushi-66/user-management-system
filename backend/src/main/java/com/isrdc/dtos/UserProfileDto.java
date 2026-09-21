@@ -3,6 +3,7 @@ package com.isrdc.dtos;
 
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.isrdc.entities.User;
 
@@ -17,15 +18,35 @@ public class UserProfileDto {
 	 private String bio;
 	 private String profession;
 	 private Integer age;
+	 private Integer profileId;
+private List<String> skills;
+private String education;
 	 
-		private User user;
+
+	 public List<String> getSkills() {
+	return skills;
+}
+
+public void setSkills(List<String> skills) {
+	this.skills = skills;
+}
+
+public String getEducation() {
+	return education;
+}
+
+public void setEducation(String education) {
+	this.education = education;
+}
+
+	 public Integer getProfileId() {
+	     return profileId;
+	 }
+
+	 public void setProfileId(Integer profileId) {
+	     this.profileId = profileId;
+	 }
 		
-	 public User getUser() {
-			return user;
-		}
-		public void setUser(User user) {
-			this.user = user;
-		}
 	 public Integer getUserId() {
 		 return userId;
 	 }
@@ -68,6 +89,7 @@ public class UserProfileDto {
 	 public void setAge(Integer age) {
 		 this.age = age;
 	 }
+	
 	 
 
 }

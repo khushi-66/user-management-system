@@ -84,7 +84,7 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="text-center" style={{ fontSize: "13px" }}>
-          © {new Date().getFullYear()} UMS | Built by You
+          © {new Date().getFullYear()} UMS | Built by Khushi
         </div>
       </div>
     </footer>

@@ -525,7 +525,13 @@ const handleKeyDown= (e,index)=>{
 
 
 </div>
-    </form>  
+    </form> 
+    <div className="">
+      Already registered ?
+      <Link to="/login" className=" fs-6 ms-2 link-primary link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover">
+          Go to LogIn
+        </Link>
+      </div> 
       </div></div>
 {/* ############################### signup form end  ###########################################3 */}
 

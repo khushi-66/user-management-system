@@ -1,5 +1,7 @@
 package com.isrdc.dtos;
 
+import java.time.LocalDateTime;
+
 import com.isrdc.entities.User;
 
 
@@ -9,15 +11,18 @@ public class NotificationDto {
 	
 	 private String title;
 	 private String message;
-	 private Boolean isRead;
+	 private String isRead;
+	 private LocalDateTime time;
 	 
-		private User user;
 	 
-	 public User getUser() {
-		return user;
+		
+	 
+	 
+	 public LocalDateTime getTime() {
+		return time;
 	}
-	 public void setUser(User user) {
-		 this.user = user;
+	 public void setTime(LocalDateTime time) {
+		 this.time = time;
 	 }
 	 public Integer getNotificationId() {
 		 return notificationId;
@@ -38,10 +43,10 @@ public class NotificationDto {
 	 public void setMessage(String message) {
 		 this.message = message;
 	 }
-	 public Boolean getIsRead() {
+	 public String getIsRead() {
 		 return isRead;
 	 }
-	 public void setIsRead(Boolean isRead) {
+	 public void setIsRead(String isRead) {
 		 this.isRead = isRead;
 	 }
 	 

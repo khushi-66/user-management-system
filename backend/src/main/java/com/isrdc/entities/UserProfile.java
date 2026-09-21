@@ -2,6 +2,7 @@ package com.isrdc.entities;
 
 
 import java.time.LocalDate;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,11 +25,31 @@ public class UserProfile {
 	 private String bio;
 	 private String profession;
 	 private Integer age;
+	 private List<String> skills;
+	 private String education;
+	 	 
+
+	 	 public List<String> getSkills() {
+	 	return skills;
+	 }
+
+	 public void setSkills(List<String> skills) {
+	 	this.skills = skills;
+	 }
+
+	 public String getEducation() {
+	 	return education;
+	 }
+
+	 public void setEducation(String education) {
+	 	this.education = education;
+	 }
+
 	 @OneToOne
 		@JoinColumn(name="user_id")
 		private User user;
 	 
-	 
+	
 	 public User getUser() {
 		return user;
 	}

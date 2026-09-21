@@ -31,67 +31,13 @@ public class UserDto {
 	private String password;
 	private String status;
 	
-	
-	
-	private List<LoginHistory>loginHistories;
-	
-	
-	private List<ActivityLog>activityLogs;
-	
-	
-	private List< Notification>notifications;
-	
-	
-	private List<PasswordReset>passwordResets;
-	
-	
-	private UserProfile userProfile;
-	
-	private Role role;
-	
-	
 	public String getStatus() {
 		return status;
 	}
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public List<LoginHistory> getLoginHistories() {
-		return loginHistories;
-	}
-	public void setLoginHistories(List<LoginHistory> loginHistories) {
-		this.loginHistories = loginHistories;
-	}
-	public List<ActivityLog> getActivityLogs() {
-		return activityLogs;
-	}
-	public void setActivityLogs(List<ActivityLog> activityLogs) {
-		this.activityLogs = activityLogs;
-	}
-	public List<Notification> getNotifications() {
-		return notifications;
-	}
-	public void setNotifications(List<Notification> notifications) {
-		this.notifications = notifications;
-	}
-	public List<PasswordReset> getPasswordResets() {
-		return passwordResets;
-	}
-	public void setPasswordResets(List<PasswordReset> passwordResets) {
-		this.passwordResets = passwordResets;
-	}
-	public UserProfile getUserProfile() {
-		return userProfile;
-	}
-	public void setUserProfile(UserProfile userProfile) {
-		this.userProfile = userProfile;
-	}
-	public Role getRole() {
-		return role;
-	}
-	public void setRole(Role role) {
-		this.role = role;
-	}
+	
 	public Integer getUserId() {
 		return userId;
 	}

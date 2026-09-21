@@ -64,7 +64,7 @@ title:"Action Required"
     }
 
   return (
-    <div    style={{ minHeight: "70vh" }} className="container mt-5 d-flex align-items-center justify-content-center align-items-center">
+    <div    style={{ minHeight: "70vh" }} className={`${darkmode ?"text-light":"text-success"}container mt-5 d-flex align-items-center justify-content-center align-items-center`}>
       
       <Modal
            show={showmodal}
@@ -75,7 +75,9 @@ title:"Action Required"
         darkmode={false}
            />
       
-      <div className="card shadow p-4 pt-0" style={{ width: "450px" }}>
+      <div  className={`card shadow p-4 pt-0 ${
+    darkmode ? "bg-dark text-light" : ""
+  }`} style={{ width: "450px" }}>
          <Link  className={`ps-0   mb-0 navbar-brand d-flex align-items-center`}>
           <img
             style={{height:"50px"} }

@@ -14,34 +14,43 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.isrdc.filters.AppFilter;
 import com.isrdc.repos.ActivityLogRepo;
-import com.isrdc.services.UserService;
+import com.isrdc.services.AuthService;
 
 @Configuration
 public class AppConfiguration {
 
     
 @Autowired
-private UserService serv;
+private AuthService serv;
 @Autowired
 private AppFilter filter;
 
    
-	@Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("*")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-                        .allowedHeaders("*");
-            }
-        };
-    }
+@Bean
+public WebMvcConfigurer corsConfigurer() {
+    return new WebMvcConfigurer() {
+
+        @Override
+        public void addCorsMappings(CorsRegistry registry) {
+            registry.addMapping("/**")
+                    .allowedOrigins("http://localhost:5173")
+                    .allowedMethods(
+                            "GET",
+                            "POST",
+                            "PUT",
+                            "DELETE",
+                            "PATCH",
+                            "OPTIONS"
+                    )
+                    .allowedHeaders("*");
+        }
+    };
+}
 	
 	@Bean
 	public PasswordEncoder passEncoder() {
@@ -63,16 +72,42 @@ private AppFilter filter;
 	
 	@Bean
 	public SecurityFilterChain appSecurity(HttpSecurity sec) throws Exception {
-		return sec.csrf(csrf->csrf.disable()).authorizeHttpRequests(
-				req->req.requestMatchers("/contact","/resend-verificationmail", "/verify-passwordtoken","/update-password","/reset-password","/send-otp","/verify-otp","/signup","/verify-email","/signin")
-				.permitAll()
-				.anyRequest()
-				.authenticated()
-				).sessionManagement(
-						sess->sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authenticationProvider(authProvider())
-				.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
-				.build();
+
+	    return sec
+	            .csrf(csrf -> csrf.disable())
+	            .cors(cors -> {})
+	            .authorizeHttpRequests(
+	                req -> req
+	                    .requestMatchers(
+	                        "/uploads/**",
+	                        "/contact",
+	                        "/resend-verificationmail",
+	                        "/verify-passwordtoken",
+	                        "/update-password",
+	                        "/reset-password",
+	                        "/send-otp",
+	                        "/verify-otp",
+	                        "/signup",
+	                        "/verify-email",
+	                        "/signin"
+	                    )
+	                    .permitAll()
+	                    .anyRequest()
+	                    .authenticated()
+	            )
+	            .sessionManagement(
+	                sess -> sess.sessionCreationPolicy(
+	                    SessionCreationPolicy.STATELESS
+	                )
+	            )
+	            .authenticationProvider(authProvider())
+	            .addFilterBefore(
+	                filter,
+	                UsernamePasswordAuthenticationFilter.class
+	            )
+	            .build();
 	}
+	
+	  
  
 }

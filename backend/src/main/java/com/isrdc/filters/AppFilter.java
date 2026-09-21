@@ -13,7 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 
 import com.isrdc.jwts.JwtService;
-import com.isrdc.services.UserService;
+import com.isrdc.services.AuthService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,11 +26,15 @@ public class AppFilter extends OncePerRequestFilter {
 	private JwtService jwtServ;
 	
 	@Autowired
-	private UserService userServ;
+	private AuthService userServ;
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
+		if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+		    filterChain.doFilter(request, response);
+		    return;
+		}
 		// TODO Auto-generated method stub
 		String authHdr = request.getHeader("Authorization");
 		String token = null;		

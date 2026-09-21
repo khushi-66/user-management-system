@@ -14,7 +14,24 @@ export default function Login(){
     const[loading,setLoading]=useState(false);
     const[isAuthenticate,setIsAuthenticate]=useState(false)
     const [password,setPassword]=useState();
-    const [user,setUser]=useState({"name":"","id":"","role":""});
+    const [user,setUser]=useState({id: "",
+    name: "",
+    role: "",
+    status:"",
+    phone:"",
+    email:"",
+    lastLogin:"",
+    profile:{
+         profileId: "",
+        userId: "",
+        bio: "",
+        profession: "",
+        dob: null,
+        age: "",
+        address: "",
+        profileUrl: ""
+    },
+});
 
 
 // ######################################## field validation ###################
@@ -55,37 +72,77 @@ export default function Login(){
                          email:email,
                         password:password
                     });
-                    if (resp.data.Status === "success") {
-                    const loggedInUser = {
-    id: resp.data.userid,
+console.log("response notifications  =  ",resp.data.notifications);
+console.log("userProfile  =  ",resp.data.userProfile)
+console.log("userId  =  ",resp.data.userId)
+
+                    if (resp.data.status === 'success') {
+    const loggedInUser = {
+    id: resp.data.userId,
     name: resp.data.username,
-    role: resp.data.role
+    role: resp.data.role,
+    status:resp.data.accountStatus,
+    phone:resp.data.phone,
+    email:resp.data.email,
+    lastLogin:resp.data.lastLogin,
+    profile:{
+         profileId: resp.data.userProfile?.profileId || null,
+        bio: resp.data.userProfile?.bio || "",
+        profession: resp.data.userProfile?.profession || "",
+        dob: resp.data.userProfile?.dob || null,
+        age: resp.data.userProfile?.age || null,
+        address: resp.data.userProfile?.address || "",
+        profileUrl: resp.data.userProfile?.profileUrl || null
+    }
 };
+localStorage.clear();
 localStorage.setItem("token", resp.data.token);
+localStorage.setItem("notifications", JSON.stringify(resp.data.notifications));
 localStorage.setItem("user", JSON.stringify(loggedInUser));
 setUser(loggedInUser);
-                          }
+                          
                           const u=JSON.parse(localStorage.getItem("user"));
-                           console.log(u.id);
-                          console.log(resp.data.role);
-                           console.log(resp.data.userid);
-                            console.log(resp.data.Message);
-                             console.log(resp.data.username);
+                          console.log("user data start..................")
+                           console.log("role "+resp.data.role);
+                           console.log("userid "+resp.data.userId);
+                            console.log("message "+resp.data.responseMsg);
+                            console.log("status "+resp.data.status);
+                             console.log("name  "+resp.data.username);
+                             console.log("profilephoto  "+resp.data.profilephoto);
+                             console.log("user data end ..................")
                     setEmail('');
                     setPassword('');
-                    setModalData({
+                    
+                       setModalData({
           type:"success",
            msg:
-`Congratualations !! ${resp.data.username} you are logged in successfully`,
+`Congratualations ${resp.data.username.trim().split(/\s+/)[0]} !!! you are logged in successfully`,
 title:"Login Successfull"
-        })
-        setShowModal(true);
+        })   
+ setShowModal(true);
+    }
+      else {
+
+            console.log("Login failed:", resp.data.responseMsg);
+
+            setModalData({
+                type: "error",
+                msg: resp.data.responseMsg || "Login failed.",
+                title: "Login Failed"
+            });
+
+            setShowModal(true);
+        }
+        
+                   
+                  
+       
                 }
                catch (err) {
     let message = "Something went wrong. Please try again.";
 
     if (err.response) {
-        message = err.response.data?.message || "Login failed.";
+        message = err.response.data?.message || resp.data.responseMsg;
     } else if (err.request) {
         message = "Unable to connect to the server. Please check your internet connection.";
     }
@@ -140,7 +197,7 @@ return(
 {/* ####################################   Logo  #################################### */}
 
 
-                    <h2 className="text-primary text-center  mb-4">Login</h2>
+                    <h2 className="text-dark text-center  mb-4">Login</h2>
                     <form onSubmit={handleLogin}>
           <div className="mb-3 row align-items-center">
             <label htmlFor="email" className="col-sm-4 col-form-label">
@@ -181,6 +238,12 @@ return(
             <div className="d-flex justify-content-start">
                 <Link to="/forgot-password" className="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" >Forgot Password</Link>
             </div>
+            <div className="mt-2">
+                  Don't have Account?
+                  <Link to="/signup" className=" fs-6 ms-2 link-primary link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover">
+                      Create Account
+                    </Link>
+                  </div>
         </div>
 </form>
                 </div>
