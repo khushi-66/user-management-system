@@ -1,0 +1,19 @@
+.custom-width {
+  width: 90%;
+  margin: auto; /* center karne ke liye */
+}
+.placeholder-light::placeholder {
+  color: #d1d5db !important;
+  opacity: 1;
+}
+
+.error-light {
+  color: #ff6b6b;
+}
+
+/* Desktop (≥992px) */
+@media (min-width: 992px) {
+  .custom-width {
+    width: 38%;
+  }
+}

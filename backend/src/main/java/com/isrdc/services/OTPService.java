@@ -1,0 +1,92 @@
+package com.isrdc.services;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import com.isrdc.exceptions.InvalidOTPException;
+import com.isrdc.exceptions.OTPExpiredException;
+import com.isrdc.utils.OTPGenerator;
+import com.isrdc.utils.OTPInfo;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
+
+@Component
+public class OTPService {
+
+	@Autowired
+	OTPGenerator otpgenerator;
+	@Value("${twilio.account.sid}")
+	private String sid;
+	
+	@Value("${twilio.auth.token}")
+	private String authtoken;
+	
+	@Value("${twilio.phone.number}")
+	private String twilioPhone;
+	
+	Map<String, OTPInfo>otpstorage=new HashMap<String,OTPInfo>();
+	
+	
+	public void sendOTP (String phone) {
+		String otp=otpgenerator.GenerateOTP();
+		OTPInfo otpinfo=new OTPInfo();
+		otpinfo.setOtp(otp);
+		otpinfo.setExpiryTime(LocalDateTime.now().plusMinutes(5));
+		otpstorage.put(phone, otpinfo);
+		System.out.println(otpinfo);
+		System.out.println(authtoken);
+		System.out.println(twilioPhone);
+		System.out.println(sid);
+		try {
+			
+			Twilio.init( sid,authtoken);
+			String msg="Your OTP for account verification is "+otp+" to Verify Your Phone"+
+					" This code is valid for 5 minutes.\n Please do not share it with anyone.\n\n– Team CodeCrafters";
+			Message.creator(new PhoneNumber("+91"+phone),new PhoneNumber(twilioPhone), msg).create();
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+		
+		
+		System.out.println("otp successfully sent"+otpstorage.get(phone).getOtp());
+	}
+	
+	
+	public boolean verify( String phone, String otp) {
+		boolean flag =false;
+		String storageotp=otpstorage.get(phone).getOtp();
+		LocalDateTime expirytime=otpstorage.get(phone).getExpiryTime();
+		
+		    if( ! otp.equals(storageotp)) {
+				flag=false;
+				
+				throw new InvalidOTPException("Invalid OTP.\n Please enter the correct verification code.");
+		    }else {
+		    	flag=true;
+		    }
+				
+		    
+		    if(LocalDateTime.now().isAfter(expirytime)) {
+					
+					throw new OTPExpiredException("Hey User OTP is Expired !! Please Resend Again");
+				}
+				else {
+					
+					flag=true;
+				}
+			
+		
+		otpstorage.remove(phone);
+		System.out.println(flag);
+		return flag;
+	}
+
+}
